@@ -485,7 +485,7 @@ export default function GameScreen({ settings, onExit }: GameScreenProps) {
       side: THREE.DoubleSide,
     });
     const playerMesh = new THREE.Mesh(playerGeo, playerMat);
-    playerMesh.position.set(0, 1.0, 5); // Start slightly forward
+    playerMesh.position.set(0, 1.8, 5); // Start slightly forward
     playerMesh.castShadow = true;
     scene.add(playerMesh);
 
@@ -780,7 +780,7 @@ export default function GameScreen({ settings, onExit }: GameScreenProps) {
     let enemyIdCounter = enemyDefs.length;
     const spawnEnemy = (startX: number, startZ: number, speed = 1.2, range = 4.5, pattern: "line" | "circle" = "line") => {
       const g = new THREE.Group();
-      g.position.set(startX, 0.8, startZ);
+      g.position.set(startX, 1.6, startZ);
 
       // Clone texture so each enemy has its own offset state
       const enemyTex = enemyBaseTexture.clone();
@@ -1012,7 +1012,7 @@ export default function GameScreen({ settings, onExit }: GameScreenProps) {
     // Dynamic reset listener
     const handleResetEvent = () => {
       const s = stateRef.current;
-      playerMesh.position.set(0, 1.0, 10);
+      playerMesh.position.set(0, 1.8, 10);
       playerMesh.scale.set(1.8, 1.8, 1.8);
       // Reset all items
       collectibles.forEach((item) => {
@@ -1057,7 +1057,7 @@ export default function GameScreen({ settings, onExit }: GameScreenProps) {
         ghost.currentFrame = 0;
         ghost.animTimer = 0;
         ghost.currentRow = 0;
-        ghost.mesh.position.set(ghost.startX, 0.8, ghost.startZ);
+        ghost.mesh.position.set(ghost.startX, 1.6, ghost.startZ);
         ghost.mesh.rotation.set(0, 0, 0);
         ghost.mesh.scale.set(1.8, 1.8, 1.8);
         ghost.mesh.visible = true;
@@ -1682,8 +1682,8 @@ export default function GameScreen({ settings, onExit }: GameScreenProps) {
         if (player.z > 24.2) player.z = 24.2;
 
         // Update 3D player mesh coords
-        playerMesh.position.set(player.x, player.y, player.z);
-        playerLight.position.set(player.x, player.y + 0.5, player.z);
+        playerMesh.position.set(player.x, player.y + 0.8, player.z);
+        playerLight.position.set(player.x, player.y + 0.5 + 0.8, player.z);
 
         // Blinking indicator if invulnerable
         if (player.isInvulnerable > 0) {
@@ -1970,7 +1970,7 @@ export default function GameScreen({ settings, onExit }: GameScreenProps) {
             }
 
             // Bobbing hover vertical offsets
-            ghost.mesh.position.y = 0.85 + Math.sin(timestamp * 0.005 + ghost.id) * 0.12;
+            ghost.mesh.position.y = 1.65 + Math.sin(timestamp * 0.005 + ghost.id) * 0.12;
 
             // Cooldown ticks
             if (ghost.attackCooldown > 0) {
@@ -2365,7 +2365,7 @@ export default function GameScreen({ settings, onExit }: GameScreenProps) {
           playerMesh.lookAt(0, playerMesh.position.y, -20);
           // Gently bob the player up and down
           const pBob = Math.sin(timestamp * 0.002) * 0.03;
-          playerMesh.position.y = 1.0 + pBob;
+          playerMesh.position.y = 1.8 + pBob;
         }
       }
 
@@ -2452,6 +2452,18 @@ export default function GameScreen({ settings, onExit }: GameScreenProps) {
           >
             {gameState === "paused" ? <Play className="w-4 h-4 fill-white" /> : <Pause className="w-4 h-4 fill-zinc-300" />}
           </button>
+
+          <button
+            onClick={() => {
+              sound.playClick();
+              onExit();
+            }}
+            className="p-2.5 bg-zinc-900/60 hover:bg-red-950/40 hover:text-red-400 border border-zinc-800/80 hover:border-red-900/40 text-zinc-400 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 text-xs font-kanit shadow-sm"
+            title="ออกจากเกมกลับหน้าหลัก"
+          >
+            <Home className="w-4 h-4" />
+            <span className="hidden md:inline">ออกจากเกม</span>
+          </button>
         </div>
       </div>
 
@@ -2536,18 +2548,30 @@ export default function GameScreen({ settings, onExit }: GameScreenProps) {
                 <h3 className="text-2xl font-bold font-kanit text-white">หยุดเกมชั่วคราว</h3>
                 <p className="text-sm text-zinc-400 font-kanit">สืบสานการผจญภัยเมืองด่านซ้ายเมื่อพร้อม</p>
               </div>
-              <div className="flex gap-2.5 justify-center">
+              <div className="flex flex-col gap-2.5 w-full">
+                <div className="flex gap-2 w-full justify-center">
+                  <button
+                    onClick={togglePause}
+                    className="flex-1 px-6 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-sm font-semibold font-kanit transition-all cursor-pointer"
+                  >
+                    เล่นต่อ
+                  </button>
+                  <button
+                    onClick={handleRestart}
+                    className="flex-1 px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white rounded-xl text-sm font-semibold font-kanit transition-all cursor-pointer"
+                  >
+                    เริ่มใหม่
+                  </button>
+                </div>
                 <button
-                  onClick={togglePause}
-                  className="px-6 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-sm font-semibold font-kanit transition-all cursor-pointer"
+                  onClick={() => {
+                    sound.playClick();
+                    onExit();
+                  }}
+                  className="w-full px-4 py-2 bg-zinc-900/70 hover:bg-red-950/40 hover:text-red-400 border border-zinc-800/80 hover:border-red-900/40 text-zinc-400 rounded-xl text-sm font-semibold font-kanit transition-all cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  เล่นต่อ
-                </button>
-                <button
-                  onClick={handleRestart}
-                  className="px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white rounded-xl text-sm font-semibold font-kanit transition-all cursor-pointer"
-                >
-                  เริ่มใหม่
+                  <Home className="w-4 h-4" />
+                  ออกจากเกมกลับหน้าหลัก
                 </button>
               </div>
             </motion.div>
