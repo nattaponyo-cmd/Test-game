@@ -1,0 +1,6 @@
+{
+  "name": "Dan Sai Adventure",
+  "description": "Dan Sai Adventure - A cultural adventure game set in the famous Dan Sai district, complete with a start menu, keybinding configurations, and an interactive Phi Ta Khon mini-game.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
